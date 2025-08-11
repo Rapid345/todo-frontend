@@ -1,40 +1,36 @@
-import React, { useState } from 'react';
-import { FaPlus } from 'react-icons/fa';
+import React, { useState } from "react";
+import axios from "axios";
 
 function TodoForm({ onAdded }) {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    if (!title.trim()) return; // Prevent empty todos
 
-    const res = await fetch('https://todo-backend-2-zcgr.onrender.com/todos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title }),
-    });
-
-    if (res.ok) {
-      setTitle('');
-      onAdded();
+    try {
+      await axios.post("/todos", { title });
+      setTitle(""); // Clear input
+      onAdded(); // Refresh the list
+    } catch (err) {
+      console.error("Error adding todo:", err);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="d-flex gap-2 mb-4 p-3 bg-light rounded shadow-sm"
-    >
-      <input
-        type="text"
-        className="form-control"
-        placeholder="Add a new task..."
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <button className="btn btn-primary d-flex align-items-center">
-        <FaPlus className="me-2" /> Add
-      </button>
+    <form onSubmit={handleSubmit} className="mb-3">
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Enter a new task..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <button type="submit" className="btn btn-success">
+          Add
+        </button>
+      </div>
     </form>
   );
 }

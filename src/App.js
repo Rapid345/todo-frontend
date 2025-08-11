@@ -3,11 +3,8 @@ import axios from "axios";
 import TodoForm from "./components/TodoForm";
 import TodoList from "./components/TodoList";
 
-// Use your live backend URL here
-const API_BASE = "https://todo-backend-2-zcgr.onrender.com";
-
-// Configure axios to prepend the base URL automatically
-axios.defaults.baseURL = API_BASE;
+// Set axios base URL (use Netlify env var if available, fallback to live backend)
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE || "https://todo-backend-2-zcgr.onrender.com";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -15,14 +12,14 @@ function App() {
   // Fetch all todos
   const fetchTodos = async () => {
     try {
-      const res = await axios.get("/todos"); // Gets from https://todo-backend-2-zcgr.onrender.com/todos
+      const res = await axios.get("/todos"); // Will resolve to https://todo-backend-2-zcgr.onrender.com/todos
       setTodos(res.data);
     } catch (err) {
       console.error("Error fetching todos:", err);
     }
   };
 
-  // Update the todo list on first render
+  // Fetch todos on component mount
   useEffect(() => {
     fetchTodos();
   }, []);

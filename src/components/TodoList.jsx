@@ -1,49 +1,55 @@
-import React from 'react';
-import { FaTrash, FaCheckCircle, FaRegCircle } from 'react-icons/fa';
+import React from "react";
+import axios from "axios";
 
 function TodoList({ todos, onUpdated }) {
-  const toggleComplete = async (todo) => {
-    await fetch(`https://todo-backend-2-zcgr.onrender.com/todos/${todo._id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...todo, completed: !todo.completed }),
-    });
-    onUpdated();
+  const toggleComplete = async (id, currentStatus, title) => {
+    try {
+      await axios.put(`/todos/${id}`, {
+        completed: !currentStatus,
+        title: title
+      });
+      onUpdated();
+    } catch (err) {
+      console.error("Error updating todo:", err);
+    }
   };
 
   const deleteTodo = async (id) => {
-    await fetch(`https://todo-backend-2-zcgr.onrender.com/todos/${id}`, {
-      method: 'DELETE',
-    });
-    onUpdated();
+    try {
+      await axios.delete(`/todos/${id}`);
+      onUpdated();
+    } catch (err) {
+      console.error("Error deleting todo:", err);
+    }
   };
 
   return (
-    <ul className="list-group shadow-sm">
+    <ul className="list-group">
+      {todos.length === 0 && (
+        <li className="list-group-item text-center text-muted">
+          No tasks yet. Add one above!
+        </li>
+      )}
       {todos.map((todo) => (
         <li
           key={todo._id}
           className="list-group-item d-flex justify-content-between align-items-center"
         >
           <span
-            className={`d-flex align-items-center ${
-              todo.completed ? 'text-decoration-line-through text-muted' : ''
-            }`}
-            style={{ cursor: 'pointer' }}
-            onClick={() => toggleComplete(todo)}
+            style={{
+              textDecoration: todo.completed ? "line-through" : "none",
+              cursor: "pointer"
+            }}
+            onClick={() => toggleComplete(todo._id, todo.completed, todo.title)}
           >
-            {todo.completed ? (
-              <FaCheckCircle className="text-success me-2" />
-            ) : (
-              <FaRegCircle className="text-secondary me-2" />
-            )}
             {todo.title}
           </span>
-          <FaTrash
-            className="text-danger"
-            style={{ cursor: 'pointer' }}
+          <button
+            className="btn btn-sm btn-danger"
             onClick={() => deleteTodo(todo._id)}
-          />
+          >
+            Delete
+          </button>
         </li>
       ))}
     </ul>
