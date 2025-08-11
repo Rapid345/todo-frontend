@@ -3,7 +3,7 @@ import { FaTrash, FaCheckCircle, FaRegCircle } from 'react-icons/fa';
 
 function TodoList({ todos, onUpdated }) {
   const toggleComplete = async (todo) => {
-    await fetch(`http://localhost:5000/api/todos/${todo._id}`, {
+    await fetch(`https://todo-backend-2-zcgr.onrender.com/api/todos/${todo._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...todo, completed: !todo.completed }),
@@ -12,7 +12,7 @@ function TodoList({ todos, onUpdated }) {
   };
 
   const deleteTodo = async (id) => {
-    await fetch(`http://localhost:5000/api/todos/${id}`, {
+    await fetch(`https://todo-backend-2-zcgr.onrender.com/api/todos/${id}`, {
       method: 'DELETE',
     });
     onUpdated();

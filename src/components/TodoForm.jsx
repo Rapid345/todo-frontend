@@ -8,7 +8,7 @@ function TodoForm({ onAdded }) {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const res = await fetch('http://localhost:5000/api/todos', {
+    const res = await fetch('https://todo-backend-2-zcgr.onrender.com/api/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title }),
